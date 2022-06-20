@@ -270,7 +270,7 @@ const mouse = {
   x: undefined, y: undefined,
 }
 window.onload = () => {
-  console.log("The page has loaded fully")
+  console.log("The page has loaded fully");
   let totalFrameCount = 0;
   let numberOfLives = 10;
   let numberOfLivesArray = [];
@@ -413,7 +413,7 @@ window.onload = () => {
     function createRotatingStarfish() {
       rotatingStarfishArray.push(new ConstantRoationObjects(myCanvas, ctx, starfishRotationImg, 40, 40))
     }
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
       createRotatingStarfish()
     }
     // CREATING FUNCTIONS TO INVOKE ONLY NOT PUSHING ANY ELEMENTS INTO THEIR RESPECTIVE ARRAYS
@@ -492,9 +492,11 @@ window.onload = () => {
     //   mouse.y = event.y;
     //   console.log(mouse.x)
     // })
+    let canvasPosition = myCanvas.getBoundingClientRect();
+    console.log(canvasPosition)
     myCanvas.addEventListener('mousemove', function (event) {
-      mouse.x = event.x;
-      mouse.y = event.y;
+      mouse.x = event.x - (canvasPosition.left + 30);
+      mouse.y = event.y - (canvasPosition.top + 30);
     })
     // function drawMainCharacter() {
     //   ctx.fillStyle = 'black'

@@ -54,3 +54,6 @@ canvas {
   justify-content: center;
   align-items: center;
 }
+.indexCanvasOne {
+  cursor:none;
+}
