@@ -1,6 +1,8 @@
 let animationID = "";
 let begginingBubblesArray = [];
 let totalScore = 0;
+let numberOfLives = 10;
+let intervalId = null;
 function statingoff() {
   const beginningCanvas = document.querySelector("#stater-particles-animation");
   const ctxbeginning = beginningCanvas.getContext("2d");
@@ -183,8 +185,8 @@ class Megladon extends Blueprint {
     this.image = imageElement;
     this.x = -100
     this.y = this.myCanvas.height
-    this.width = 250;
-    this.height = 250;
+    this.width = 300;
+    this.height = 200;
     this.vX = 1.5;
     this.vY = 10;
     this.aPYUP = -1;
@@ -578,7 +580,6 @@ window.onload = () => {
   let bug = false;
   console.log("The page has loaded fully");
   let totalFrameCount = 0;
-  let numberOfLives = 10;
   let numberOfLivesArray = [];
   let binaryJellyFish = 0;
   let binaryFastJellyFish2 = 0;
@@ -596,7 +597,6 @@ window.onload = () => {
   let rotatingStarfishArray = [];
   let mainCharacterArray = [];
   let megladonArray = [];
-  let intervalId = null;
   let sharkDirectionModulus = 0;
   let fastBubblesDirector = 0;
   let slowBubblesDirector = 0;
@@ -791,7 +791,6 @@ window.onload = () => {
     function createMegladon() {
       megladonArray.push(new Megladon(ctx, myCanvas, megladonImg))
     }
-    createMegladon();
     function createBubbles() {
       // let rectWidth = Math.floor((Math.random() * (myCanvas.width * 0.4)) + myCanvas.width * 0.2);
       // let rectX = Math.floor(Math.random() * (myCanvas.width - rectWidth))
@@ -925,7 +924,7 @@ window.onload = () => {
           // console.log("Slow: randomly created swim to right Jellyfish")
         }
       }
-      if (totalFrameCount % 1000 === 0) {
+      if (totalFrameCount % 1200 === 0) {
         createMegladon();
       }
       // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS
@@ -961,7 +960,7 @@ window.onload = () => {
               mainCharacterArray[0].height -= 5
             }
             if (mainCharacterArray[0].height <= 40 && mainCharacterArray[0].width <= 40) {
-              totalScore += 10
+              totalScore += Math.floor(Math.random() * 5 + 1) + 4
             }
             console.log('ate starfish')
             rotatingStarfishArray[i].doubleCrashCheck();
@@ -1192,8 +1191,28 @@ window.onload = () => {
         mainCharacterArray[0].mainCharacterLocationFunction();
         mainCharacterArray[0].draw();
       }
+      if (numberOfLives <= 0) {
+        clearInterval(intervalId)
+        console.log(finalscoreWebpage)
+        console.log(myGameArea)
+        finalscoreWebpage.end();
+      }
       // console.log(`Currenly running SetInterval for main game animation`);
     }
-    intervald = setInterval(updateGame, 18);
+    intervalId = setInterval(updateGame, 18);
+    console.log(ctx)
+    const finalscoreWebpage = {
+      section: document.createElement("section"),
+      finalize: document.querySelector('.indexCanvasOne'),
+      tohidden: document.querySelector('.hidden'),
+      currentCanvas: document.querySelector('.indexCanvasOne'),
+      end: function () {
+        this.section.className = 'scoreboard';
+        this.section.innerHTML = '<div class="scoreInfo"><div class="finalScoreboard"></div><button class="restart-btn">RESTART GAME';
+        document.body.insertBefore(this.section, this.tohidden);
+        this.currentCanvas.className = 'hidden';
+      }
+    }
+
   }
 };
