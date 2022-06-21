@@ -1,57 +1,63 @@
-let animationID = '';
+let animationID = "";
 let begginingBubblesArray = [];
 let totalScore = 0;
 function statingoff() {
-  const beginningCanvas = document.querySelector("#stater-particles-animation")
-  const ctxbeginning = beginningCanvas.getContext('2d')
-  console.log(beginningCanvas)
-  console.log(ctxbeginning)
+  const beginningCanvas = document.querySelector("#stater-particles-animation");
+  const ctxbeginning = beginningCanvas.getContext("2d");
+  console.log(beginningCanvas);
+  console.log(ctxbeginning);
   beginningCanvas.width = window.innerWidth - 15;
   beginningCanvas.height = window.innerHeight - 15;
-  window.addEventListener('resize', function () {
+  window.addEventListener("resize", function () {
     beginningCanvas.width = window.innerWidth - 10;
     beginningCanvas.height = window.innerHeight - 10;
-  })
-  console.log(begginingBubblesArray instanceof Array)
+  });
   const mousebeginning = {
-    x: undefined, y: undefined
-  }
-  beginningCanvas.addEventListener('mousemove', function (event) {
+    x: undefined,
+    y: undefined,
+  };
+  beginningCanvas.addEventListener("mousemove", function (event) {
     mousebeginning.x = event.x;
     mousebeginning.y = event.y;
     for (let i = 0; i < 5; i++) {
-      begginingBubblesArray.push(new beginningBubbles())
+      begginingBubblesArray.push(new beginningBubbles());
     }
     // console.log("is this thing working")
-  })
-  beginningCanvas.addEventListener('click', function (event) {
+  });
+  beginningCanvas.addEventListener("click", function (event) {
     mousebeginning.x = event.x;
     mousebeginning.y = event.y;
     for (let i = 0; i < 300; i++) {
-      begginingBubblesArray.push(new beginningBubbles())
+      begginingBubblesArray.push(new beginningBubbles());
     }
     // console.log("is this thing working")
-  })
+  });
   class beginningBubbles {
     constructor() {
-      this.x = mousebeginning.x
-      this.y = mousebeginning.y
+      this.x = mousebeginning.x;
+      this.y = mousebeginning.y;
       // this.x = Math.random() * beginningCanvas.width;
       // this.y = Math.random() * beginningCanvas.height;
-      this.vX = Math.random() < 0.5 ? Math.random() * 5 + 1 : ((Math.random() * 5 + 1) * -1);
-      this.vY = Math.random() < 0.5 ? Math.random() * 5 + 1 : ((Math.random() * 5 + 1) * -1);
-      this.size = Math.floor((Math.random() * 15) + 10);
+      this.vX =
+        Math.random() < 0.5
+          ? Math.random() * 5 + 1
+          : (Math.random() * 5 + 1) * -1;
+      this.vY =
+        Math.random() < 0.5
+          ? Math.random() * 5 + 1
+          : (Math.random() * 5 + 1) * -1;
+      this.size = Math.floor(Math.random() * 15 + 10);
     }
     update() {
-      this.x += this.vX
-      this.y += this.vY
+      this.x += this.vX;
+      this.y += this.vY;
       if (this.size > 1) {
-        this.size -= 0.2
+        this.size -= 0.2;
       }
     }
     draw() {
       // ctxbeginning.fillStyle = 'rgba(0, 161, 185, 0.35)'
-      ctxbeginning.fillStyle = 'rgba(120,180,225,0.8'
+      ctxbeginning.fillStyle = "rgba(120,180,225,0.8";
       ctxbeginning.beginPath();
       ctxbeginning.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
       ctxbeginning.fill();
@@ -59,8 +65,8 @@ function statingoff() {
   }
   function drawingthebubbles() {
     for (let i = 0; i < begginingBubblesArray.length; i++) {
-      begginingBubblesArray[i].update()
-      begginingBubblesArray[i].draw()
+      begginingBubblesArray[i].update();
+      begginingBubblesArray[i].draw();
       // console.log(begginingBubblesArray[i].size)
     }
   }
@@ -68,7 +74,7 @@ function statingoff() {
     for (let i = 0; i < begginingBubblesArray.length; i++) {
       if (begginingBubblesArray[i].size <= 1) {
         begginingBubblesArray.splice(i, 1);
-        console.log(begginingBubblesArray.length)
+        console.log(begginingBubblesArray.length);
         i--;
       }
       // if (begginingBubblesArray[i].x < 0 || begginingBubblesArray[i].x > beginningCanvas.width) {
@@ -84,15 +90,17 @@ function statingoff() {
     }
   }
   function animate() {
-    console.log(`Initial animation Frame for particles on 'Bubble Popper' still running, with ${begginingBubblesArray.length} number of particles/bubbles`)
+    console.log(
+      `Initial animation Frame for particles on 'Bubble Popper' still running, with ${begginingBubblesArray.length} number of particles/bubbles`
+    );
     ctxbeginning.clearRect(0, 0, beginningCanvas.width, beginningCanvas.height);
     drawingthebubbles();
-    animationID = requestAnimationFrame(animate)
-    removingIssues()
+    animationID = requestAnimationFrame(animate);
+    removingIssues();
   }
-  animate()
+  animate();
 }
-statingoff()
+statingoff();
 const myGameArea = {
   canvas: document.createElement("canvas"),
   location: document.querySelector(`.outer`),
@@ -118,6 +126,7 @@ class Blueprint {
     this.width = width;
     this.height = height;
     this.ctx = canvasContext;
+    this.crashing = false;
   }
   updatePosition() {
     this.x += this.vX;
@@ -148,6 +157,9 @@ class Blueprint {
       this.left() > obstacle.right()
     );
   }
+  doubleCrashCheck() {
+    this.crashing = !this.crashing
+  }
 }
 class ImageObjects extends Blueprint {
   constructor(x, y, width, height, canvasContext, imageElement) {
@@ -161,6 +173,69 @@ class ImageObjects extends Blueprint {
   mainCharacterLocationFunction() {
     this.x = mouse.x;
     this.y = mouse.y;
+  }
+}
+class Megladon extends Blueprint {
+  constructor(canvasContext, myCanvas, imageElement) {
+    super();
+    this.ctx = canvasContext
+    this.myCanvas = myCanvas
+    this.image = imageElement;
+    this.x = -100
+    this.y = this.myCanvas.height
+    this.width = 250;
+    this.height = 250;
+    this.vX = 1.5;
+    this.vY = 10;
+    this.aPYUP = -1;
+    this.aPYDOWN = 0.5;
+    this.limit = 450;
+    this.rotate = -50
+    this.collision = false;
+  }
+  updateParabola() {
+    this.limit -= 1
+  }
+  update() {
+    this.x += this.vX
+    if (this.limit < 0) {
+      this.y -= this.aPYUP;
+    } else {
+      this.y -= this.aPYDOWN;
+    }
+  }
+  drawRotated() {
+    this.rotate -= 0.3
+    this.ctx.save()
+    this.ctx.translate(this.x, this.y)
+    this.ctx.rotate(this.rotate * Math.PI / 360)
+    this.ctx.drawImage(this.image, 0, 0, this.width, this.height);
+    this.ctx.restore()
+  }
+  drawTransition() {
+    this.rotate += 1.2
+    this.ctx.save()
+    this.ctx.translate(this.x, this.y)
+    this.ctx.rotate(this.rotate * Math.PI / 360)
+    this.ctx.drawImage(this.image, 0, 0, this.width, this.height);
+    this.ctx.restore()
+  }
+  drawEndRotation() {
+    this.rotate -= 0.5
+    this.ctx.save()
+    this.ctx.translate(this.x, this.y)
+    this.ctx.rotate(this.rotate * Math.PI / 360)
+    this.ctx.drawImage(this.image, 0, 0, this.width, this.height);
+    this.ctx.restore()
+  }
+  updateVX() {
+    this.vX = 3
+  }
+  drawNormal() {
+    this.ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+  }
+  collisionUpdate() {
+    this.collision = !this.collision;
   }
 }
 class Shark extends ImageObjects {
@@ -272,9 +347,13 @@ class CircleObjects extends Blueprint {
     this.endAngle = endAngle;
     this.ctx = canvasContext;
     this.gapfiller = Math.random() < 0.7 ? true : false;
-    this.vYFastVariable = this.gapfiller ? (Math.floor(Math.random() * 3) + 1) : (Math.floor(Math.random() * 2) + 5);
+    this.vYFastVariable = this.gapfiller
+      ? Math.floor(Math.random() * 3) + 1
+      : Math.floor(Math.random() * 2) + 5;
     this.slowtofast = Math.random() < 0.8 ? true : false;
-    this.vYSlowVariable = this.slowtofast ? (Math.floor(Math.random() * 2) + 1) : 4;
+    this.vYSlowVariable = this.slowtofast
+      ? Math.floor(Math.random() * 2) + 1
+      : 4;
     this.bubbleDirector = true;
     this.vX = 2;
     this.smallBubbleDiameter = 50;
@@ -293,19 +372,27 @@ class CircleObjects extends Blueprint {
     // this.ctx.fillStyle = 'black'
     // this.ctx.fillStyle = "rgba(0, 161, 185, 0.35)";
     this.ctx.beginPath();
-    this.ctx.strokeStyle = 'black'
-    this.ctx.rect(this.x - this.smallBubbleDiameter / 2, this.y - this.smallBubbleDiameter / 2, this.smallBubbleDiameter, this.smallBubbleDiameter);
+    this.ctx.strokeStyle = "black";
+    this.ctx.rect(
+      this.x - this.smallBubbleDiameter / 2,
+      this.y - this.smallBubbleDiameter / 2,
+      this.smallBubbleDiameter,
+      this.smallBubbleDiameter
+    );
     this.ctx.stroke();
-
   }
   drawBigBubbleHitBoxes() {
     // this.ctx.fillStyle = 'black'
     // this.ctx.fillStyle = "rgba(0, 161, 185, 0.35)";
     this.ctx.beginPath();
-    this.ctx.strokeStyle = 'black'
-    this.ctx.rect(this.x - this.bigBubbleDiameter / 2, this.y - this.bigBubbleDiameter / 2, this.bigBubbleDiameter, this.bigBubbleDiameter);
+    this.ctx.strokeStyle = "black";
+    this.ctx.rect(
+      this.x - this.bigBubbleDiameter / 2,
+      this.y - this.bigBubbleDiameter / 2,
+      this.bigBubbleDiameter,
+      this.bigBubbleDiameter
+    );
     this.ctx.stroke();
-
   }
   bubbleDirectorChange() {
     this.bubbleDirector = !this.bubbleDirector;
@@ -368,6 +455,7 @@ class ConstantRoationObjects extends Blueprint {
     this.vY = 2;
     this.angle = 360;
     this.spin = Math.random() < 0.5 ? -1 : 1;
+    this.crashing = false;
   }
   update() {
     this.angle += 10;
@@ -375,6 +463,7 @@ class ConstantRoationObjects extends Blueprint {
       this.y = 0 - this.height;
       this.x = Math.floor(Math.random() * this.myCanvas.width);
       this.vY = Math.floor(Math.random() * 4) + 1;
+      this.crashing = false;
     }
     this.y += this.vY;
   }
@@ -486,6 +575,7 @@ const mouse = {
   y: undefined,
 };
 window.onload = () => {
+  let bug = false;
   console.log("The page has loaded fully");
   let totalFrameCount = 0;
   let numberOfLives = 10;
@@ -505,6 +595,7 @@ window.onload = () => {
   let greenBaitAndFishRandomArray = [];
   let rotatingStarfishArray = [];
   let mainCharacterArray = [];
+  let megladonArray = [];
   let intervalId = null;
   let sharkDirectionModulus = 0;
   let fastBubblesDirector = 0;
@@ -519,9 +610,9 @@ window.onload = () => {
     startGame();
   };
   function startGame() {
-    cancelAnimationFrame(animationID)
+    cancelAnimationFrame(animationID);
     begginingBubblesArray = [];
-    console.log(begginingBubblesArray)
+    console.log(begginingBubblesArray);
     console.log("Hello Welcome");
     // Using Global scope myCanvas and ctx variables and assigning them in the function of startGame
     myCanvas = document.querySelector(".indexCanvasOne");
@@ -568,6 +659,8 @@ window.onload = () => {
     littleGreenFishImg.src = "./images/littleGreenFish.png";
     const mainCharacterImg = new Image();
     mainCharacterImg.src = "./images/MainFish.png";
+    const megladonImg = new Image();
+    megladonImg.src = "./images/Megladon.png"
     // CREATING AND PUSHING ELEMENTS THAT HAVE A SET NUMBER OF ITEMS THROUGHOUT THE ENTIRE GAME
     function createHeartLivesInitialization() {
       let timX = 370;
@@ -671,7 +764,7 @@ window.onload = () => {
         new Turtle(
           0,
           myCanvas.height - 200,
-          100,
+          80,
           60,
           ctx,
           friendlyTurtleImg,
@@ -685,15 +778,20 @@ window.onload = () => {
     for (let i = 0; i < 3; i++) {
       createTurtle();
     }
+    // CREATING FUNCTIONS TO INVOKE ONLY NOT PUSHING ANY ELEMENTS INTO THEIR RESPECTIVE ARRAYS
     function createRotatingStarfish() {
       rotatingStarfishArray.push(
         new ConstantRoationObjects(myCanvas, ctx, starfishRotationImg, 40, 40)
       );
     }
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 5; i++) {
       createRotatingStarfish();
     }
     // CREATING FUNCTIONS TO INVOKE ONLY NOT PUSHING ANY ELEMENTS INTO THEIR RESPECTIVE ARRAYS
+    function createMegladon() {
+      megladonArray.push(new Megladon(ctx, myCanvas, megladonImg))
+    }
+    createMegladon();
     function createBubbles() {
       // let rectWidth = Math.floor((Math.random() * (myCanvas.width * 0.4)) + myCanvas.width * 0.2);
       // let rectX = Math.floor(Math.random() * (myCanvas.width - rectWidth))
@@ -774,20 +872,12 @@ window.onload = () => {
     myCanvas.addEventListener("mousemove", function (event) {
       mouse.x = event.x - (canvasPosition.left + 30);
       mouse.y = event.y - (canvasPosition.top + 30);
+      bug = true
     });
-    // function drawMainCharacter() {
-    //   ctx.fillStyle = 'black'
-    //   ctx.beginPath();
-    //   ctx.arc(mouse.x , mouse.y, 30, 0, Math.PI*2);
-    //   ctx.fill();
-    //   console.log('drew circle')
-    // }
-    // setInterval(drawMainCharacter, 15)
     mainCharacterArray.push(
-      new ImageObjects(mouse.x, mouse.y, 50, 50, ctx, mainCharacterImg)
+      new ImageObjects(500, 500, 150, 150, ctx, mainCharacterImg)
     );
     console.log(mainCharacterArray);
-
     // MAIN UPDATE FUNCTION FOR THE ENTIRE GAME --- RECURSION // MAIN UPDATE FUNCTION FOR THE ENTIRE GAME --- RECURSION
     // MAIN UPDATE FUNCTION FOR THE ENTIRE GAME --- RECURSION // MAIN UPDATE FUNCTION FOR THE ENTIRE GAME --- RECURSION
     // MAIN UPDATE FUNCTION FOR THE ENTIRE GAME --- RECURSION // MAIN UPDATE FUNCTION FOR THE ENTIRE GAME --- RECURSION
@@ -800,6 +890,7 @@ window.onload = () => {
       if (totalFrameCount % 100 === 0) {
         createFastBubbles1();
         createFastBubbles1();
+        createRightSharks();
       }
       if (totalFrameCount % 150 === 0) {
         createBubbles();
@@ -834,6 +925,9 @@ window.onload = () => {
           // console.log("Slow: randomly created swim to right Jellyfish")
         }
       }
+      if (totalFrameCount % 1000 === 0) {
+        createMegladon();
+      }
       // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS
       for (let i = 0; i < baitAndFishRandomArray.length; i++) {
         baitAndFishRandomArray[i].updatecoodinates();
@@ -848,9 +942,31 @@ window.onload = () => {
         greenBaitAndFishRandomArray[i].updatecoodinates();
       }
       // UPDATE STARFISH
+      if (rotatingStarfishArray.length < 3) {
+        rotatingStarfishArray.push(new ConstantRoationObjects(myCanvas, ctx, starfishRotationImg, 40, 40))
+      }
       for (let i = 0; i < rotatingStarfishArray.length; i++) {
+        if (rotatingStarfishArray[i].crashing) {
+          rotatingStarfishArray.splice(i, 1);
+          i--;
+        }
         rotatingStarfishArray[i].update();
-        // console.log(rotatingStarfishArray.length);
+        if (!rotatingStarfishArray[i].crashing) {
+          let check = rotatingStarfishArray[i].crashWith(mainCharacterArray[0]);
+          if (check) {
+            if (mainCharacterArray[0].width > 40) {
+              mainCharacterArray[0].width -= 5
+            }
+            if (mainCharacterArray[0].height > 30) {
+              mainCharacterArray[0].height -= 5
+            }
+            if (mainCharacterArray[0].height <= 40 && mainCharacterArray[0].width <= 40) {
+              totalScore += 10
+            }
+            console.log('ate starfish')
+            rotatingStarfishArray[i].doubleCrashCheck();
+          }
+        }
       }
       // UPDATE SLOW BUBBLES POSITION IN CANVAS AND DELETE THOSE WHO ARE OUT OF FRAME
       if (totalFrameCount % 100 === 0) {
@@ -860,16 +976,21 @@ window.onload = () => {
         }
       }
       for (let i = 0; i < obstacleBubblesArray.length; i++) {
+        if (obstacleBubblesArray[i].crashing) {
+          obstacleBubblesArray.splice(i, 1);
+          i -= 1;
+        }
         obstacleBubblesArray[i].updateSlowY();
         obstacleBubblesArray[i].updateXDirection();
         let check = obstacleBubblesArray[i].crashWithBig(mainCharacterArray[0]);
         if (check) {
-          // console.log('Collision hase been detected!')
-          totalScore ++
+          totalScore++;
+          obstacleBubblesArray[i].doubleCrashCheck();
+
         }
         if (obstacleBubblesArray[i].y < 0 - obstacleBubblesArray[i].width) {
           obstacleBubblesArray.splice([i], 1);
-          i -= 1;
+          i--;
         }
       }
       // UPDATE FAST BUBBLES POSITION IN CANVAS AND DELETE THOSE WHO ARE OUT OF FRAME
@@ -877,17 +998,24 @@ window.onload = () => {
         for (let i = 0; i < obstacleFastBubblesArray1.length; i++) {
           obstacleFastBubblesArray1[i].changeBubbleX();
           obstacleFastBubblesArray1[i].bubbleDirectorChange();
-          let check = obstacleFastBubblesArray1[i].crashWithSmall(mainCharacterArray[0]);
-          if (check) {
-            // console.log('Collision hase been detected!')
-            totalScore ++
-          }
         }
       }
       for (let i = 0; i < obstacleFastBubblesArray1.length; i++) {
+        if (obstacleFastBubblesArray1[i].crashing) {
+          obstacleFastBubblesArray1.splice(i, 1);
+          i -= 1;
+        }
         obstacleFastBubblesArray1[i].updateFastY();
         obstacleFastBubblesArray1[i].updateXDirection();
-        if (obstacleFastBubblesArray1[i].y < 0 - obstacleFastBubblesArray1[i].width) {
+        let check = obstacleFastBubblesArray1[i].crashWithSmall(mainCharacterArray[0]);
+        if (check) {
+          totalScore++;
+          obstacleFastBubblesArray1[i].doubleCrashCheck();
+        }
+        if (
+          obstacleFastBubblesArray1[i].y <
+          0 - obstacleFastBubblesArray1[i].width
+        ) {
           obstacleFastBubblesArray1.splice([i], 1);
           i -= 1;
         }
@@ -900,6 +1028,10 @@ window.onload = () => {
         }
       }
       for (let i = 0; i < obstacleRightSharksArray.length; i++) {
+        if (obstacleRightSharksArray[i].crashing) {
+          obstacleRightSharksArray.splice(i, 1);
+          i -= 1;
+        }
         if (
           obstacleRightSharksArray[i].accelerationBinary &&
           obstacleRightSharksArray[i].vX < 3
@@ -917,6 +1049,11 @@ window.onload = () => {
         ) {
           obstacleRightSharksArray.splice([i], 1);
           i -= 1;
+        }
+        let check = obstacleRightSharksArray[i].crashWith(mainCharacterArray[0])
+        if (check) {
+          numberOfLives -= 1;
+          obstacleRightSharksArray[i].doubleCrashCheck();
         }
         // console.log(obstacleRightSharksArray.length);
       }
@@ -955,6 +1092,25 @@ window.onload = () => {
           bigTurtleLocation[i].randomizingTurtle();
         }
       }
+      for (let i = 0; i < megladonArray.length; i++) {
+        if (megladonArray[i].collision) {
+          megladonArray.splice(i, 1);
+          i--;
+        }
+        let check = (megladonArray[i].crashWith(mainCharacterArray[0]))
+        if (check) {
+          console.log("That's a big shark")
+          numberOfLives -= 2
+          megladonArray[i].collisionUpdate();
+        }
+        megladonArray[i].updateParabola();
+        megladonArray[i].update();
+        if (megladonArray[i].x > myCanvas.width + 200) {
+          megladonArray.splice(i, 1);
+          i--;
+        }
+
+      }
       // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR
       ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
       // REDRAWING // // REDRAWING // // REDRAWING // // REDRAWING // // REDRAWING // // REDRAWING // // REDRAWING // // REDRAWING
@@ -968,7 +1124,7 @@ window.onload = () => {
       // ctx.fillStyle = "rgba(0, 133, 255, 0.6)";
       ctx.fillStyle = "black";
       ctx.fillText("LIVES: " + numberOfLives, myCanvas.width / 2 - 100, 80);
-      ctx.fillText(`Score : ${totalScore}`, 500,400)
+      ctx.fillText(`Score : ${totalScore}`, 500, 400);
       // console.log(totalFrameCount)
       // DRAW BAIT AND FISH
       for (let i = 0; i < baitAndFishRandomArray.length; i++) {
@@ -997,12 +1153,12 @@ window.onload = () => {
       // DRAW BUBBLES
       for (let i = 0; i < obstacleBubblesArray.length; i++) {
         obstacleBubblesArray[i].draw();
-        obstacleBubblesArray[i].drawBigBubbleHitBoxes();
+        // obstacleBubblesArray[i].drawBigBubbleHitBoxes();
       }
       //  DRAW FAST BUBBLES
       for (let i = 0; i < obstacleFastBubblesArray1.length; i++) {
         obstacleFastBubblesArray1[i].draw();
-        obstacleFastBubblesArray1[i].drawSmallBubbleHitBoxes();
+        // obstacleFastBubblesArray1[i].drawSmallBubbleHitBoxes();
       }
       // DRAW SHARKS
       for (let i = 0; i < obstacleRightSharksArray.length; i++) {
@@ -1016,10 +1172,27 @@ window.onload = () => {
       for (let i = 0; i < toLeftJellyFishArray.length; i++) {
         toLeftJellyFishArray[i].draw();
       }
+      for (let i = 0; i < megladonArray.length; i++) {
+        if (megladonArray[i].limit > 0) {
+          megladonArray[i].drawRotated();
+          // console.log(megladonArray[i].limit)
+        } else if (megladonArray[i].limit <= 0 && megladonArray[i].limit > -300) {
+          megladonArray[i].drawTransition();
+          megladonArray[i].updateVX();
+        } else {
+          megladonArray[i].drawEndRotation();
+        }
+        // console.log(megladonArray[i].x)
+        // console.log(megladonArray[i].y)
+        // console.log(megladonArray.length)
+
+      }
       // DRAW MAIN CHARACTER
-      mainCharacterArray[0].mainCharacterLocationFunction();
-      mainCharacterArray[0].draw();
-      console.log(`Currenly running SetInterval for main game animation`)
+      if (bug) {
+        mainCharacterArray[0].mainCharacterLocationFunction();
+        mainCharacterArray[0].draw();
+      }
+      // console.log(`Currenly running SetInterval for main game animation`);
     }
     intervald = setInterval(updateGame, 18);
   }
