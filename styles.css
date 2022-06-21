@@ -2,6 +2,14 @@
   margin: 0;
   padding: 0;
 }
+#stater-particles-animation{
+  border: solid 5px red;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  /* z-index: -1; */
+}
 .outer {
   display: flex;
   justify-content: center;
@@ -27,6 +35,7 @@
   border-radius: 10px;
   border: 5px solid rgb(0, 0, 0);
   box-shadow: 1px 1px 10px 5px #000000;
+  z-index: 100;
 }
 #begin:hover {
   background-color: darkblue;
@@ -55,5 +64,5 @@ canvas {
   align-items: center;
 }
 .indexCanvasOne {
-  cursor:none;
+  cursor: none;
 }

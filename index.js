@@ -1,3 +1,98 @@
+let animationID = '';
+let begginingBubblesArray = [];
+let totalScore = 0;
+function statingoff() {
+  const beginningCanvas = document.querySelector("#stater-particles-animation")
+  const ctxbeginning = beginningCanvas.getContext('2d')
+  console.log(beginningCanvas)
+  console.log(ctxbeginning)
+  beginningCanvas.width = window.innerWidth - 15;
+  beginningCanvas.height = window.innerHeight - 15;
+  window.addEventListener('resize', function () {
+    beginningCanvas.width = window.innerWidth - 10;
+    beginningCanvas.height = window.innerHeight - 10;
+  })
+  console.log(begginingBubblesArray instanceof Array)
+  const mousebeginning = {
+    x: undefined, y: undefined
+  }
+  beginningCanvas.addEventListener('mousemove', function (event) {
+    mousebeginning.x = event.x;
+    mousebeginning.y = event.y;
+    for (let i = 0; i < 5; i++) {
+      begginingBubblesArray.push(new beginningBubbles())
+    }
+    // console.log("is this thing working")
+  })
+  beginningCanvas.addEventListener('click', function (event) {
+    mousebeginning.x = event.x;
+    mousebeginning.y = event.y;
+    for (let i = 0; i < 300; i++) {
+      begginingBubblesArray.push(new beginningBubbles())
+    }
+    // console.log("is this thing working")
+  })
+  class beginningBubbles {
+    constructor() {
+      this.x = mousebeginning.x
+      this.y = mousebeginning.y
+      // this.x = Math.random() * beginningCanvas.width;
+      // this.y = Math.random() * beginningCanvas.height;
+      this.vX = Math.random() < 0.5 ? Math.random() * 5 + 1 : ((Math.random() * 5 + 1) * -1);
+      this.vY = Math.random() < 0.5 ? Math.random() * 5 + 1 : ((Math.random() * 5 + 1) * -1);
+      this.size = Math.floor((Math.random() * 15) + 10);
+    }
+    update() {
+      this.x += this.vX
+      this.y += this.vY
+      if (this.size > 1) {
+        this.size -= 0.2
+      }
+    }
+    draw() {
+      // ctxbeginning.fillStyle = 'rgba(0, 161, 185, 0.35)'
+      ctxbeginning.fillStyle = 'rgba(120,180,225,0.8'
+      ctxbeginning.beginPath();
+      ctxbeginning.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+      ctxbeginning.fill();
+    }
+  }
+  function drawingthebubbles() {
+    for (let i = 0; i < begginingBubblesArray.length; i++) {
+      begginingBubblesArray[i].update()
+      begginingBubblesArray[i].draw()
+      // console.log(begginingBubblesArray[i].size)
+    }
+  }
+  function removingIssues() {
+    for (let i = 0; i < begginingBubblesArray.length; i++) {
+      if (begginingBubblesArray[i].size <= 1) {
+        begginingBubblesArray.splice(i, 1);
+        console.log(begginingBubblesArray.length)
+        i--;
+      }
+      // if (begginingBubblesArray[i].x < 0 || begginingBubblesArray[i].x > beginningCanvas.width) {
+      //   begginingBubblesArray.splice(i, 1);
+      //   // console.log(begginingBubblesArray.length)
+      //   i--;
+      // }
+      // if (begginingBubblesArray[i].y < 0 || begginingBubblesArray[i].y > beginningCanvas.height) {
+      //   begginingBubblesArray.splice(i, 1);
+      //   // console.log(begginingBubblesArray.length)
+      //   i--;
+      // }
+    }
+  }
+  function animate() {
+    console.log(`Initial animation Frame for particles on 'Bubble Popper' still running, with ${begginingBubblesArray.length} number of particles/bubbles`)
+    ctxbeginning.clearRect(0, 0, beginningCanvas.width, beginningCanvas.height);
+    drawingthebubbles();
+    animationID = requestAnimationFrame(animate)
+    removingIssues()
+  }
+  animate()
+}
+statingoff()
 const myGameArea = {
   canvas: document.createElement("canvas"),
   location: document.querySelector(`.outer`),
@@ -39,6 +134,8 @@ class Blueprint {
   }
   top() {
     return this.y;
+    // console.log("Checking to see if this works with extened class")
+    // it works
   }
   bottom() {
     return this.y + this.height;
@@ -62,8 +159,8 @@ class ImageObjects extends Blueprint {
     this.ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
   }
   mainCharacterLocationFunction() {
-    this.x = mouse.x
-    this.y = mouse.y
+    this.x = mouse.x;
+    this.y = mouse.y;
   }
 }
 class Shark extends ImageObjects {
@@ -81,24 +178,35 @@ class Shark extends ImageObjects {
     this.ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
   }
   changeSharkBinary() {
-    this.sharkBinary = !this.sharkBinary
+    this.sharkBinary = !this.sharkBinary;
   }
   checkBinary() {
     if (this.sharkBinary) {
-      this.vY = 1.5
+      this.vY = 1.5;
     } else {
-      this.vY = -2
+      this.vY = -2;
     }
   }
 }
 class Turtle extends Blueprint {
-  constructor(x, y, width, height, canvasContext, imageElement, myCanvas, bigTurtleMovementX, bigTurtleMovementY, bigTurtleMovementBinary) {
+  constructor(
+    x,
+    y,
+    width,
+    height,
+    canvasContext,
+    imageElement,
+    myCanvas,
+    bigTurtleMovementX,
+    bigTurtleMovementY,
+    bigTurtleMovementBinary
+  ) {
     super(x, y, width, height, canvasContext);
     this.image = imageElement;
     this.myCanvas = myCanvas;
     this.bigTurtleMovementX = bigTurtleMovementX;
     this.bigTurtleMovementY = bigTurtleMovementY;
-    this.bigTurtleMovementBinary = bigTurtleMovementBinary
+    this.bigTurtleMovementBinary = bigTurtleMovementBinary;
   }
   draw() {
     // console.log(this.ctx)
@@ -156,17 +264,21 @@ class Turtle extends Blueprint {
 }
 class CircleObjects extends Blueprint {
   constructor(x, y, canvasContext, radius, startAngle, endAngle) {
-    super(x, y);
+    super();
+    this.x = x;
+    this.y = y;
     this.radius = radius;
     this.startAngle = startAngle;
     this.endAngle = endAngle;
     this.ctx = canvasContext;
-    this.gapfiller = Math.random() < 0.70 ? true : false;
-    this.speedFastVariable = this.gapfiller ? (Math.floor(Math.random() * 3) + 1) : (Math.floor(Math.random() * 2) + 5)
-    this.slowtofast = Math.random() < 0.80 ? true : false;
-    this.speedSlowVariable = this.slowtofast ? (Math.floor(Math.random() * 2)) : 4;
+    this.gapfiller = Math.random() < 0.7 ? true : false;
+    this.vYFastVariable = this.gapfiller ? (Math.floor(Math.random() * 3) + 1) : (Math.floor(Math.random() * 2) + 5);
+    this.slowtofast = Math.random() < 0.8 ? true : false;
+    this.vYSlowVariable = this.slowtofast ? (Math.floor(Math.random() * 2) + 1) : 4;
     this.bubbleDirector = true;
     this.vX = 2;
+    this.smallBubbleDiameter = 50;
+    this.bigBubbleDiameter = 90;
   }
   draw() {
     // console.log(this.ctx)
@@ -177,8 +289,26 @@ class CircleObjects extends Blueprint {
     this.ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
     this.ctx.stroke();
   }
+  drawSmallBubbleHitBoxes() {
+    // this.ctx.fillStyle = 'black'
+    // this.ctx.fillStyle = "rgba(0, 161, 185, 0.35)";
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = 'black'
+    this.ctx.rect(this.x - this.smallBubbleDiameter / 2, this.y - this.smallBubbleDiameter / 2, this.smallBubbleDiameter, this.smallBubbleDiameter);
+    this.ctx.stroke();
+
+  }
+  drawBigBubbleHitBoxes() {
+    // this.ctx.fillStyle = 'black'
+    // this.ctx.fillStyle = "rgba(0, 161, 185, 0.35)";
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = 'black'
+    this.ctx.rect(this.x - this.bigBubbleDiameter / 2, this.y - this.bigBubbleDiameter / 2, this.bigBubbleDiameter, this.bigBubbleDiameter);
+    this.ctx.stroke();
+
+  }
   bubbleDirectorChange() {
-    this.bubbleDirector = !this.bubbleDirector
+    this.bubbleDirector = !this.bubbleDirector;
   }
   changeBubbleX() {
     if (this.bubbleDirector) {
@@ -187,88 +317,174 @@ class CircleObjects extends Blueprint {
       this.vX = -3;
     }
   }
+  updateFastY() {
+    this.y -= this.vYFastVariable;
+  }
+  updateSlowY() {
+    this.y -= this.vYSlowVariable;
+  }
+  updateXDirection() {
+    this.x += this.vX;
+  }
+  rightSmall() {
+    return this.x + this.smallBubbleDiameter;
+  }
+  bottomSmall() {
+    return this.y + this.smallBubbleDiameter;
+  }
+  rightBig() {
+    return this.x + this.bigBubbleDiameter;
+  }
+  bottomBig() {
+    return this.y + this.bigBubbleDiameter;
+  }
+  crashWithSmall(obstacle) {
+    return !(
+      this.bottomSmall() < obstacle.top() ||
+      this.top() > obstacle.bottom() ||
+      this.rightSmall() < obstacle.left() ||
+      this.left() > obstacle.right()
+    );
+  }
+  crashWithBig(obstacle) {
+    return !(
+      this.bottomBig() < obstacle.top() ||
+      this.top() > obstacle.bottom() ||
+      this.rightBig() < obstacle.left() ||
+      this.left() > obstacle.right()
+    );
+  }
 }
 class ConstantRoationObjects extends Blueprint {
   constructor(myCanvas, canvasContext, imageElement, width, height) {
     super();
     this.width = width;
     this.height = height;
-    this.myCanvas = myCanvas
+    this.myCanvas = myCanvas;
     this.ctx = canvasContext;
     this.image = imageElement;
-    this.x = Math.floor(Math.random() * this.myCanvas.width)
-    this.y = 0
+    this.x = Math.floor(Math.random() * this.myCanvas.width);
+    this.y = 0;
     this.vY = 2;
     this.angle = 360;
     this.spin = Math.random() < 0.5 ? -1 : 1;
   }
   update() {
-    this.angle += 10
+    this.angle += 10;
     if (this.y > this.myCanvas.height + this.height) {
       this.y = 0 - this.height;
       this.x = Math.floor(Math.random() * this.myCanvas.width);
       this.vY = Math.floor(Math.random() * 4) + 1;
     }
-    this.y += this.vY
+    this.y += this.vY;
   }
   draw() {
     this.ctx.save();
     this.ctx.translate(this.x - this.width / 2, this.y);
-    this.ctx.rotate(this.angle * Math.PI / 360 * this.spin);
+    this.ctx.rotate(((this.angle * Math.PI) / 360) * this.spin);
     // this.ctx.fillRect(0, 0, 80, 80);
-    this.ctx.drawImage(this.image, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
+    this.ctx.drawImage(
+      this.image,
+      0 - this.width / 2,
+      0 - this.height / 2,
+      this.width,
+      this.height
+    );
     this.ctx.restore();
   }
 }
 class ToRandomCoordinateImg extends Blueprint {
-  constructor(x, y, canvasContext, myCanvas, baitImg, littleFishImg, displacementX, displacementY, distanceFromLeft, distanceFromBottom) {
+  constructor(
+    x,
+    y,
+    canvasContext,
+    myCanvas,
+    baitImg,
+    littleFishImg,
+    displacementX,
+    displacementY,
+    distanceFromLeft,
+    distanceFromBottom
+  ) {
     super(x, y);
     this.ctx = canvasContext;
-    this.myCanvas = myCanvas
+    this.myCanvas = myCanvas;
     this.baitImg = baitImg;
     this.littleFishImg = littleFishImg;
     this.displacementX = displacementX;
     this.displacementY = displacementY;
     this.distanceFromLeft = distanceFromLeft;
     this.distanceFromBottom = distanceFromBottom;
-    this.randomXBait = Math.floor(Math.random() * (this.myCanvas.width - this.displacementX) + this.distanceFromLeft);
-    this.randomYBait = Math.floor(Math.random() * (this.myCanvas.height - this.displacementY) + this.distanceFromBottom);
-    this.randomXLittleFish = Math.floor(Math.random() * (this.myCanvas.width - this.displacementX) + this.distanceFromLeft);
-    this.randomYLittleFish = Math.floor(Math.random() * (this.myCanvas.height - this.displacementY) + this.distanceFromBottom);
+    this.randomXBait = Math.floor(
+      Math.random() * (this.myCanvas.width - this.displacementX) +
+      this.distanceFromLeft
+    );
+    this.randomYBait = Math.floor(
+      Math.random() * (this.myCanvas.height - this.displacementY) +
+      this.distanceFromBottom
+    );
+    this.randomXLittleFish = Math.floor(
+      Math.random() * (this.myCanvas.width - this.displacementX) +
+      this.distanceFromLeft
+    );
+    this.randomYLittleFish = Math.floor(
+      Math.random() * (this.myCanvas.height - this.displacementY) +
+      this.distanceFromBottom
+    );
     this.dXX = this.randomXLittleFish - this.randomXBait;
     this.dYY = this.randomYLittleFish - this.randomYBait;
-    this.multiplesOfTwoArray = [32, 64, 128, 256]
+    this.multiplesOfTwoArray = [32, 64, 128, 256];
   }
   drawBait() {
     this.ctx.drawImage(this.baitImg, this.randomXBait, this.randomYBait, 1, 1);
   }
   radommizeBaitImgCoordiates() {
-    this.randomXBait = Math.floor(Math.random() * (this.myCanvas.width - this.displacementX) + this.distanceFromLeft)
-    this.randomYBait = Math.floor(Math.random() * (this.myCanvas.height - this.displacementY) + this.distanceFromBottom)
+    this.randomXBait = Math.floor(
+      Math.random() * (this.myCanvas.width - this.displacementX) +
+      this.distanceFromLeft
+    );
+    this.randomYBait = Math.floor(
+      Math.random() * (this.myCanvas.height - this.displacementY) +
+      this.distanceFromBottom
+    );
   }
   drawFish() {
-    this.ctx.drawImage(this.littleFishImg, this.randomXLittleFish, this.randomYLittleFish, 10, 5);
+    this.ctx.drawImage(
+      this.littleFishImg,
+      this.randomXLittleFish,
+      this.randomYLittleFish,
+      10,
+      5
+    );
   }
   updatedistance() {
-    this.dXX = (this.randomXLittleFish - this.randomXBait) / this.multiplesOfTwoArray[(Math.floor(Math.random() * 4))];
-    this.dYY = (this.randomYLittleFish - this.randomYBait) / this.multiplesOfTwoArray[(Math.floor(Math.random() * 4))];
+    this.dXX =
+      (this.randomXLittleFish - this.randomXBait) /
+      this.multiplesOfTwoArray[Math.floor(Math.random() * 4)];
+    this.dYY =
+      (this.randomYLittleFish - this.randomYBait) /
+      this.multiplesOfTwoArray[Math.floor(Math.random() * 4)];
   }
   updatecoodinates() {
-    if (this.randomXLittleFish === this.randomXBait && this.randomYLittleFish === this.randomYBait) {
+    if (
+      this.randomXLittleFish === this.randomXBait &&
+      this.randomYLittleFish === this.randomYBait
+    ) {
       this.radommizeBaitImgCoordiates();
       this.updatedistance();
     }
     if (this.randomXLittleFish != this.randomXBait) {
-      this.randomXLittleFish -= this.dXX
+      this.randomXLittleFish -= this.dXX;
     }
     if (this.randomYLittleFish != this.randomYBait) {
-      this.randomYLittleFish -= this.dYY
+      this.randomYLittleFish -= this.dYY;
     }
   }
 }
 const mouse = {
-  x: undefined, y: undefined,
-}
+  x: undefined,
+  y: undefined,
+};
 window.onload = () => {
   console.log("The page has loaded fully");
   let totalFrameCount = 0;
@@ -303,6 +519,9 @@ window.onload = () => {
     startGame();
   };
   function startGame() {
+    cancelAnimationFrame(animationID)
+    begginingBubblesArray = [];
+    console.log(begginingBubblesArray)
     console.log("Hello Welcome");
     // Using Global scope myCanvas and ctx variables and assigning them in the function of startGame
     myCanvas = document.querySelector(".indexCanvasOne");
@@ -336,19 +555,19 @@ window.onload = () => {
     const friendlyTurtleImg = new Image();
     friendlyTurtleImg.src = "./images/friendlyTurtle.png";
     const baitImg = new Image();
-    baitImg.src = "./images/bread.png"
+    baitImg.src = "./images/bread.png";
     const littleFishImg = new Image();
-    littleFishImg.src = "./images/littleFish.png"
+    littleFishImg.src = "./images/littleFish.png";
     const littleRedFishImg = new Image();
-    littleRedFishImg.src = "./images/red-fish.png"
+    littleRedFishImg.src = "./images/red-fish.png";
     const littleBlueFishImg = new Image();
-    littleBlueFishImg.src = "./images/littlebluefish.png"
+    littleBlueFishImg.src = "./images/littlebluefish.png";
     const starfishRotationImg = new Image();
-    starfishRotationImg.src = "./images/starfishRotation.png"
+    starfishRotationImg.src = "./images/starfishRotation.png";
     const littleGreenFishImg = new Image();
-    littleGreenFishImg.src = "./images/littleGreenFish.png"
+    littleGreenFishImg.src = "./images/littleGreenFish.png";
     const mainCharacterImg = new Image();
-    mainCharacterImg.src = "./images/MainFish.png"
+    mainCharacterImg.src = "./images/MainFish.png";
     // CREATING AND PUSHING ELEMENTS THAT HAVE A SET NUMBER OF ITEMS THROUGHOUT THE ENTIRE GAME
     function createHeartLivesInitialization() {
       let timX = 370;
@@ -364,30 +583,82 @@ window.onload = () => {
     // CREATE 200 BAIT AND FISH
     function createBaitAndLittleFishRandom() {
       for (let i = 0; i < 100; i++) {
-        let x = Math.floor(Math.random() * myCanvas.width - 40)
-        let y = Math.floor(Math.random() * myCanvas.height - 40)
-        baitAndFishRandomArray.push(new ToRandomCoordinateImg(x, y, ctx, myCanvas, baitImg, littleFishImg, 500, 500, 30, 70))
+        let x = Math.floor(Math.random() * myCanvas.width - 40);
+        let y = Math.floor(Math.random() * myCanvas.height - 40);
+        baitAndFishRandomArray.push(
+          new ToRandomCoordinateImg(
+            x,
+            y,
+            ctx,
+            myCanvas,
+            baitImg,
+            littleFishImg,
+            500,
+            500,
+            30,
+            70
+          )
+        );
       }
     }
     function createRedBaitAndLittleFishRandom() {
       for (let i = 0; i < 100; i++) {
-        let x = Math.floor(Math.random() * myCanvas.width - 40)
-        let y = Math.floor(Math.random() * myCanvas.height - 40)
-        redBaitAndFishRandomArray.push(new ToRandomCoordinateImg(x, y, ctx, myCanvas, baitImg, littleRedFishImg, 400, 500, 300, 300))
+        let x = Math.floor(Math.random() * myCanvas.width - 40);
+        let y = Math.floor(Math.random() * myCanvas.height - 40);
+        redBaitAndFishRandomArray.push(
+          new ToRandomCoordinateImg(
+            x,
+            y,
+            ctx,
+            myCanvas,
+            baitImg,
+            littleRedFishImg,
+            400,
+            500,
+            300,
+            300
+          )
+        );
       }
     }
     function createBlueBaitAndLittleFIshRandom() {
       for (let i = 0; i < 100; i++) {
-        let x = Math.floor(Math.random() * myCanvas.width - 40)
-        let y = Math.floor(Math.random() * myCanvas.height - 40)
-        blueBaitAndFishRandomArray.push(new ToRandomCoordinateImg(x, y, ctx, myCanvas, baitImg, littleBlueFishImg, 550, 550, 550, 150))
+        let x = Math.floor(Math.random() * myCanvas.width - 40);
+        let y = Math.floor(Math.random() * myCanvas.height - 40);
+        blueBaitAndFishRandomArray.push(
+          new ToRandomCoordinateImg(
+            x,
+            y,
+            ctx,
+            myCanvas,
+            baitImg,
+            littleBlueFishImg,
+            550,
+            550,
+            550,
+            150
+          )
+        );
       }
     }
     function createGreenBaitAndLittleFIshRandom() {
       for (let i = 0; i < 150; i++) {
-        let x = Math.floor(Math.random() * myCanvas.width - 40)
-        let y = Math.floor(Math.random() * myCanvas.height - 40)
-        greenBaitAndFishRandomArray.push(new ToRandomCoordinateImg(x, y, ctx, myCanvas, baitImg, littleGreenFishImg, 650, 350, 0, 300))
+        let x = Math.floor(Math.random() * myCanvas.width - 40);
+        let y = Math.floor(Math.random() * myCanvas.height - 40);
+        greenBaitAndFishRandomArray.push(
+          new ToRandomCoordinateImg(
+            x,
+            y,
+            ctx,
+            myCanvas,
+            baitImg,
+            littleGreenFishImg,
+            650,
+            350,
+            0,
+            300
+          )
+        );
       }
     }
     createBaitAndLittleFishRandom();
@@ -403,7 +674,11 @@ window.onload = () => {
           100,
           60,
           ctx,
-          friendlyTurtleImg, myCanvas, bigTurtleMovementX, bigTurtleMovementY, true
+          friendlyTurtleImg,
+          myCanvas,
+          bigTurtleMovementX,
+          bigTurtleMovementY,
+          true
         )
       );
     }
@@ -411,10 +686,12 @@ window.onload = () => {
       createTurtle();
     }
     function createRotatingStarfish() {
-      rotatingStarfishArray.push(new ConstantRoationObjects(myCanvas, ctx, starfishRotationImg, 40, 40))
+      rotatingStarfishArray.push(
+        new ConstantRoationObjects(myCanvas, ctx, starfishRotationImg, 40, 40)
+      );
     }
     for (let i = 0; i < 8; i++) {
-      createRotatingStarfish()
+      createRotatingStarfish();
     }
     // CREATING FUNCTIONS TO INVOKE ONLY NOT PUSHING ANY ELEMENTS INTO THEIR RESPECTIVE ARRAYS
     function createBubbles() {
@@ -449,7 +726,7 @@ window.onload = () => {
     }
     function createRightSharks() {
       let heightRandom = Math.floor(
-        Math.random() * (myCanvas.height * 0.60 - 40)
+        Math.random() * (myCanvas.height * 0.6 - 40)
       );
       obstacleRightSharksArray.push(
         new Shark(
@@ -493,11 +770,11 @@ window.onload = () => {
     //   console.log(mouse.x)
     // })
     let canvasPosition = myCanvas.getBoundingClientRect();
-    console.log(canvasPosition)
-    myCanvas.addEventListener('mousemove', function (event) {
+    console.log(canvasPosition);
+    myCanvas.addEventListener("mousemove", function (event) {
       mouse.x = event.x - (canvasPosition.left + 30);
       mouse.y = event.y - (canvasPosition.top + 30);
-    })
+    });
     // function drawMainCharacter() {
     //   ctx.fillStyle = 'black'
     //   ctx.beginPath();
@@ -506,8 +783,10 @@ window.onload = () => {
     //   console.log('drew circle')
     // }
     // setInterval(drawMainCharacter, 15)
-    mainCharacterArray.push(new ImageObjects(mouse.x, mouse.y, 50, 50, ctx, mainCharacterImg))
-    console.log(mainCharacterArray)
+    mainCharacterArray.push(
+      new ImageObjects(mouse.x, mouse.y, 50, 50, ctx, mainCharacterImg)
+    );
+    console.log(mainCharacterArray);
 
     // MAIN UPDATE FUNCTION FOR THE ENTIRE GAME --- RECURSION // MAIN UPDATE FUNCTION FOR THE ENTIRE GAME --- RECURSION
     // MAIN UPDATE FUNCTION FOR THE ENTIRE GAME --- RECURSION // MAIN UPDATE FUNCTION FOR THE ENTIRE GAME --- RECURSION
@@ -555,23 +834,23 @@ window.onload = () => {
           // console.log("Slow: randomly created swim to right Jellyfish")
         }
       }
-      // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS 
+      // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS
       for (let i = 0; i < baitAndFishRandomArray.length; i++) {
-        baitAndFishRandomArray[i].updatecoodinates()
+        baitAndFishRandomArray[i].updatecoodinates();
       }
       for (let i = 0; i < redBaitAndFishRandomArray.length; i++) {
-        redBaitAndFishRandomArray[i].updatecoodinates()
+        redBaitAndFishRandomArray[i].updatecoodinates();
       }
       for (let i = 0; i < blueBaitAndFishRandomArray.length; i++) {
-        blueBaitAndFishRandomArray[i].updatecoodinates()
+        blueBaitAndFishRandomArray[i].updatecoodinates();
       }
       for (let i = 0; i < greenBaitAndFishRandomArray.length; i++) {
-        greenBaitAndFishRandomArray[i].updatecoodinates()
+        greenBaitAndFishRandomArray[i].updatecoodinates();
       }
-      // UPDATE STARFISH 
+      // UPDATE STARFISH
       for (let i = 0; i < rotatingStarfishArray.length; i++) {
-        rotatingStarfishArray[i].update()
-        console.log(rotatingStarfishArray.length)
+        rotatingStarfishArray[i].update();
+        // console.log(rotatingStarfishArray.length);
       }
       // UPDATE SLOW BUBBLES POSITION IN CANVAS AND DELETE THOSE WHO ARE OUT OF FRAME
       if (totalFrameCount % 100 === 0) {
@@ -581,8 +860,13 @@ window.onload = () => {
         }
       }
       for (let i = 0; i < obstacleBubblesArray.length; i++) {
-        obstacleBubblesArray[i].y -= 1 + obstacleBubblesArray[i].speedSlowVariable;
-        obstacleBubblesArray[i].x += (obstacleBubblesArray[i].vX);
+        obstacleBubblesArray[i].updateSlowY();
+        obstacleBubblesArray[i].updateXDirection();
+        let check = obstacleBubblesArray[i].crashWithBig(mainCharacterArray[0]);
+        if (check) {
+          // console.log('Collision hase been detected!')
+          totalScore ++
+        }
         if (obstacleBubblesArray[i].y < 0 - obstacleBubblesArray[i].width) {
           obstacleBubblesArray.splice([i], 1);
           i -= 1;
@@ -593,12 +877,17 @@ window.onload = () => {
         for (let i = 0; i < obstacleFastBubblesArray1.length; i++) {
           obstacleFastBubblesArray1[i].changeBubbleX();
           obstacleFastBubblesArray1[i].bubbleDirectorChange();
+          let check = obstacleFastBubblesArray1[i].crashWithSmall(mainCharacterArray[0]);
+          if (check) {
+            // console.log('Collision hase been detected!')
+            totalScore ++
+          }
         }
       }
       for (let i = 0; i < obstacleFastBubblesArray1.length; i++) {
-        obstacleFastBubblesArray1[i].y -= obstacleFastBubblesArray1[i].speedFastVariable;
-        obstacleFastBubblesArray1[i].x += (obstacleFastBubblesArray1[i].vX);
-        if (obstacleFastBubblesArray1[i].y < (0 - obstacleFastBubblesArray1[i].width)) {
+        obstacleFastBubblesArray1[i].updateFastY();
+        obstacleFastBubblesArray1[i].updateXDirection();
+        if (obstacleFastBubblesArray1[i].y < 0 - obstacleFastBubblesArray1[i].width) {
           obstacleFastBubblesArray1.splice([i], 1);
           i -= 1;
         }
@@ -608,15 +897,20 @@ window.onload = () => {
         for (let i = 0; i < obstacleRightSharksArray.length; i++) {
           obstacleRightSharksArray[i].checkBinary();
           obstacleRightSharksArray[i].changeSharkBinary();
-
         }
       }
       for (let i = 0; i < obstacleRightSharksArray.length; i++) {
-        if (obstacleRightSharksArray[i].accelerationBinary && obstacleRightSharksArray[i].vX < 3) {
-          obstacleRightSharksArray[i].accelerationX += (obstacleRightSharksArray[i].vX * 0.015)
+        if (
+          obstacleRightSharksArray[i].accelerationBinary &&
+          obstacleRightSharksArray[i].vX < 3
+        ) {
+          obstacleRightSharksArray[i].accelerationX +=
+            obstacleRightSharksArray[i].vX * 0.015;
         }
-        obstacleRightSharksArray[i].x -= obstacleRightSharksArray[i].vX * obstacleRightSharksArray[i].accelerationX
-        obstacleRightSharksArray[i].y += obstacleRightSharksArray[i].vY
+        obstacleRightSharksArray[i].x -=
+          obstacleRightSharksArray[i].vX *
+          obstacleRightSharksArray[i].accelerationX;
+        obstacleRightSharksArray[i].y += obstacleRightSharksArray[i].vY;
         if (
           obstacleRightSharksArray[i].x <
           0 - obstacleRightSharksArray[i].width
@@ -637,7 +931,6 @@ window.onload = () => {
           jellyFishArray.splice([i], 1);
           i -= 1;
         }
-        // console.log(jellyFishArray.length)
       }
       // UPDATE TO LEFT JELLYFISH POSITION AND DELETE THOSE WHO ARE OUT OF FRAME
       for (let i = 0; i < toLeftJellyFishArray.length; i++) {
@@ -653,14 +946,13 @@ window.onload = () => {
           toLeftJellyFishArray.splice([i], 1);
           i -= 1;
         }
-        // console.log(toLeftJellyFishArray.length)
       }
       for (i = 0; i < bigTurtleLocation.length; i++) {
-        bigTurtleLocation[i].updateTurtle()
+        bigTurtleLocation[i].updateTurtle();
       }
       if (totalFrameCount % 5 == 0) {
         for (i = 0; i < bigTurtleLocation.length; i++) {
-          bigTurtleLocation[i].randomizingTurtle()
+          bigTurtleLocation[i].randomizingTurtle();
         }
       }
       // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR
@@ -670,12 +962,13 @@ window.onload = () => {
       myBackground.draw();
       // DRAW TURTLE
       for (i = 0; i < bigTurtleLocation.length; i++) {
-        bigTurtleLocation[i].draw()
+        bigTurtleLocation[i].draw();
       }
       ctx.font = "50px serif";
       // ctx.fillStyle = "rgba(0, 133, 255, 0.6)";
       ctx.fillStyle = "black";
       ctx.fillText("LIVES: " + numberOfLives, myCanvas.width / 2 - 100, 80);
+      ctx.fillText(`Score : ${totalScore}`, 500,400)
       // console.log(totalFrameCount)
       // DRAW BAIT AND FISH
       for (let i = 0; i < baitAndFishRandomArray.length; i++) {
@@ -699,15 +992,17 @@ window.onload = () => {
       }
       // DRAW STARFISH
       for (let i = 0; i < rotatingStarfishArray.length; i++) {
-        rotatingStarfishArray[i].draw()
+        rotatingStarfishArray[i].draw();
       }
       // DRAW BUBBLES
       for (let i = 0; i < obstacleBubblesArray.length; i++) {
         obstacleBubblesArray[i].draw();
+        obstacleBubblesArray[i].drawBigBubbleHitBoxes();
       }
       //  DRAW FAST BUBBLES
       for (let i = 0; i < obstacleFastBubblesArray1.length; i++) {
         obstacleFastBubblesArray1[i].draw();
+        obstacleFastBubblesArray1[i].drawSmallBubbleHitBoxes();
       }
       // DRAW SHARKS
       for (let i = 0; i < obstacleRightSharksArray.length; i++) {
@@ -722,9 +1017,10 @@ window.onload = () => {
         toLeftJellyFishArray[i].draw();
       }
       // DRAW MAIN CHARACTER
-      mainCharacterArray[0].mainCharacterLocationFunction()
-      mainCharacterArray[0].draw()
+      mainCharacterArray[0].mainCharacterLocationFunction();
+      mainCharacterArray[0].draw();
+      console.log(`Currenly running SetInterval for main game animation`)
     }
-    intervald = setInterval(updateGame, 15);
+    intervald = setInterval(updateGame, 18);
   }
 };
