@@ -2,7 +2,7 @@ let playerName = prompt("Enter your player name");
 let animationID = "";
 let begginingBubblesArray = [];
 let totalScore = 0;
-let numberOfLives = 1;
+let numberOfLives = 10;
 let intervalId = null;
 function statingoff() {
   const beginningCanvas = document.querySelector("#stater-particles-animation");

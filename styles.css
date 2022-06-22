@@ -116,7 +116,7 @@ canvas {
   height: 85%;
   width: 80%;
   /* background-color: orange; */
-  background-color: rgb(224, 223, 206);
+  background-color: lightgray;
   border-radius: 15px;
   display: flex;
   justify-content: center;
