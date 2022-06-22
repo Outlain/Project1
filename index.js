@@ -1,7 +1,7 @@
 let animationID = "";
 let begginingBubblesArray = [];
 let totalScore = 0;
-let numberOfLives = 10;
+let numberOfLives = 100000;
 let intervalId = null;
 function statingoff() {
   const beginningCanvas = document.querySelector("#stater-particles-animation");
@@ -21,7 +21,7 @@ function statingoff() {
   beginningCanvas.addEventListener("mousemove", function (event) {
     mousebeginning.x = event.x;
     mousebeginning.y = event.y;
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 8; i++) {
       begginingBubblesArray.push(new beginningBubbles());
     }
     // console.log("is this thing working")
@@ -59,7 +59,8 @@ function statingoff() {
     }
     draw() {
       // ctxbeginning.fillStyle = 'rgba(0, 161, 185, 0.35)'
-      ctxbeginning.fillStyle = "rgba(120,180,225,0.8";
+      // ctxbeginning.fillStyle = "rgba(120,180,225,0.8";
+      ctxbeginning.fillStyle = "rgba(225,225,225,0.5";
       ctxbeginning.beginPath();
       ctxbeginning.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
       ctxbeginning.fill();
@@ -192,21 +193,33 @@ class Megladon extends Blueprint {
     this.aPYUP = -1;
     this.aPYDOWN = 0.5;
     this.limit = 450;
-    this.rotate = -50
+    this.rotate = -50;
     this.collision = false;
+    this.changingX = 15;
+    this.changingY = this.myCanvas.height - 20;
+    this.changingYAI = 0;
+    this.changingXAI = 0;
+    this.changingXAE = 0;
   }
   updateParabola() {
     this.limit -= 1
   }
   update() {
     this.x += this.vX
+    this.changingX += this.vX
     if (this.limit < 0) {
       this.y -= this.aPYUP;
+      this.changingY -= this.aPYUP;
     } else {
       this.y -= this.aPYDOWN;
+      this.changingY -= this.aPYDOWN
     }
   }
   drawRotated() {
+    this.changingYA += 0.01
+    this.changingXAI += 0.001
+    this.changingY -= (0.55 + this.changingYAI)
+    this.changingX -= (0.05 + this.changingXAI)
     this.rotate -= 0.3
     this.ctx.save()
     this.ctx.translate(this.x, this.y)
@@ -215,6 +228,9 @@ class Megladon extends Blueprint {
     this.ctx.restore()
   }
   drawTransition() {
+    this.changingXAE += 0.001
+    this.changingY += 2
+    this.changingX += (1.4 - this.changingXAE)
     this.rotate += 1.2
     this.ctx.save()
     this.ctx.translate(this.x, this.y)
@@ -223,6 +239,7 @@ class Megladon extends Blueprint {
     this.ctx.restore()
   }
   drawEndRotation() {
+    this.changingY += 1
     this.rotate -= 0.5
     this.ctx.save()
     this.ctx.translate(this.x, this.y)
@@ -239,7 +256,48 @@ class Megladon extends Blueprint {
   collisionUpdate() {
     this.collision = !this.collision;
   }
+  drawMegladonHitboxTheory() {
+    this.ctx.save()
+    this.ctx.translate(this.x, this.y)
+    this.ctx.rotate(((this.rotate + 25)) * Math.PI / 360)
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = "black";
+    this.ctx.rect(30, 0, this.width * .9, this.height * .7);
+    this.ctx.stroke();
+    this.ctx.restore()
+  }
+  drawMegladonHitbox() {
+    this.ctx.save()
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = "black";
+    this.ctx.rect(this.changingX, this.changingY, this.width * .7, this.height * .8);
+    this.ctx.stroke();
+    this.ctx.restore()
+  }
+  left() {
+    return this.changingX;
+  }
+  right() {
+    return this.changingX + this.width * .7;
+  }
+  top() {
+    return this.changingY;
+    // console.log("Checking to see if this works with extened class")
+    // it works
+  }
+  bottom() {
+    return this.changingY + this.height * .8;
+  }
+  crashWith(obstacle) {
+    return !(
+      this.bottom() < obstacle.top() ||
+      this.top() > obstacle.bottom() ||
+      this.right() < obstacle.left() ||
+      this.left() > obstacle.right()
+    );
+  }
 }
+
 class Shark extends ImageObjects {
   constructor(x, y, width, height, canvasContext, imageElement) {
     super(x, y, width, height, canvasContext);
@@ -890,6 +948,8 @@ window.onload = () => {
         createFastBubbles1();
         createFastBubbles1();
         createRightSharks();
+        createMegladon();
+
       }
       if (totalFrameCount % 150 === 0) {
         createBubbles();
@@ -1181,9 +1241,10 @@ window.onload = () => {
         } else {
           megladonArray[i].drawEndRotation();
         }
+        megladonArray[i].drawMegladonHitbox();
         // console.log(megladonArray[i].x)
         // console.log(megladonArray[i].y)
-        // console.log(megladonArray.length)
+        console.log(megladonArray.length)
 
       }
       // DRAW MAIN CHARACTER
@@ -1199,7 +1260,7 @@ window.onload = () => {
       }
       // console.log(`Currenly running SetInterval for main game animation`);
     }
-    intervalId = setInterval(updateGame, 18);
+    intervalId = setInterval(updateGame, 20);
     console.log(ctx)
     const finalscoreWebpage = {
       section: document.createElement("section"),

@@ -19,7 +19,7 @@
 }
 .main-start-img {
   height: 100vh;
-  width: 90vw;
+  width: 95vw;
   background-image: url(./images/MainStartGameBackground.jpeg);
   background-size: cover;
   background-repeat: none;
@@ -32,24 +32,29 @@
 }
 #begin {
   padding: 25px 65px;
-  background-color: #46a1c0;
+  background-color: rgba(67, 160, 207, 0.8);
   border-radius: 10px;
-  border: 5px solid rgb(0, 0, 0);
-  box-shadow: 1px 1px 10px 5px #000000;
+  /* border: 5px solid rgb(0, 0, 0); */
+  border: 5px solid rgb(5, 5, 118);
+  /* box-shadow: 1px 1px 10px 5px #000000; */
   z-index: 100;
-  margin-top: 100px;
+  margin-top: 50px;
   margin-bottom: 50px;
 }
 .instructions {
-  width: 50vw;
-  height: 10vw;
-  background-color: rgba(107, 88, 88, 0.29);
+  width: 55vw;
+  height: 30vw;
+  background-color: rgba(75, 125, 219, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 15px;
+  border-radius: 20px;
+  border: 5px solid rgb(5, 5, 118);
   font-size: 1.5em;
   font-weight: bold;
+  text-align: center;
+  padding: 5px 40px;
+  line-height: 40px;
 }
 #begin:hover {
   background-color: darkblue;
