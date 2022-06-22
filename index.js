@@ -1,7 +1,8 @@
+let playerName = prompt("Enter your player name");
 let animationID = "";
 let begginingBubblesArray = [];
 let totalScore = 0;
-let numberOfLives = 100000;
+let numberOfLives = 1;
 let intervalId = null;
 function statingoff() {
   const beginningCanvas = document.querySelector("#stater-particles-animation");
@@ -178,115 +179,95 @@ class ImageObjects extends Blueprint {
     this.y = mouse.y;
   }
 }
-class Megladon extends Blueprint {
-  constructor(canvasContext, myCanvas, imageElement) {
-    super();
-    this.ctx = canvasContext
-    this.myCanvas = myCanvas
-    this.image = imageElement;
-    this.x = -100
-    this.y = this.myCanvas.height
+class Megladon {
+  constructor(ctx, myCanvas, imageMeg) {
+    this.x = 0;
     this.width = 300;
     this.height = 200;
-    this.vX = 1.5;
-    this.vY = 10;
-    this.aPYUP = -1;
-    this.aPYDOWN = 0.5;
-    this.limit = 450;
-    this.rotate = -50;
-    this.collision = false;
-    this.changingX = 15;
-    this.changingY = this.myCanvas.height - 20;
-    this.changingYAI = 0;
-    this.changingXAI = 0;
-    this.changingXAE = 0;
+    this.vX = 3.3;
+    this.vY = 6;
+    this.aY = -1;
+    this.imageMeg = imageMeg;
+    this.rotate1 = -120;
+    this.counter = 5;
+    this.rotate2 = 22.5;
+    this.half = 0.9;
+    this.hitboxX = -150;
+    this.hitboxVx = 4;
+    this.hitboxVy = 6;
+    this.hitboxAy = -1;
+    this.collision = false
+    this.ctx = ctx;
+    this.myCanvas = myCanvas
+    this.y = this.myCanvas.height;
+    this.hitboxY = this.myCanvas.height + 50
   }
-  updateParabola() {
-    this.limit -= 1
+  draw0() {
+    // ctx.drawImage(this.image, this.x - this.width, this.y + this.height, this.width, this.height)
+    this.ctx.strokeRect(this.hitboxX, this.hitboxY, this.width * .9, this.height * .9)
+  }
+  draw1() {
+    this.vY += 0.005
+    this.vX += 0.005
+    this.ctx.save()
+    this.ctx.translate(this.x - 150, this.y + 280)
+    this.ctx.rotate(this.rotate1 * Math.PI / 360);
+    this.ctx.drawImage(this.imageMeg, 0, 0, this.width, this.height)
+    // this.ctx.beginPath();
+    // this.ctx.fillRect(0,0,this.width, this.height)
+    // this.ctx.stroke;
+    this.ctx.restore()
+  }
+  draw2() {
+    this.vY += 0.05
+    this.vX += 0.05
+    this.aY += 0.006
+    this.hitboxAy += 0.015
+    this.rotate1 += 2.5
+    this.ctx.save()
+    this.ctx.translate(this.x - 150, this.y + 280)
+    this.ctx.rotate(this.rotate1 * Math.PI / 360);
+    this.ctx.drawImage(this.imageMeg, 0, 0, this.width, this.height)
+    // this.ctx.beginPath();
+    // this.ctx.fillRect(0,0,this.width, this.height)
+    // this.ctx.stroke;
+    this.ctx.restore()
+  }
+  draw3() {
+    this.vX += 0.05
+    this.aY += 0.0155
+    this.rotate2 += 0.5
+    this.ctx.save()
+    this.ctx.translate(this.x - 150, this.y + 280)
+    this.ctx.rotate(this.rotate2 * Math.PI / 360);
+    this.ctx.drawImage(this.imageMeg, 0, 0, this.width, this.height)
+    // this.ctx.beginPath();
+    // this.ctx.fillRect(0,0,this.width, this.height)
+    // this.ctx.stroke;
+    this.ctx.restore()
   }
   update() {
+    this.aY += 0.0055
     this.x += this.vX
-    this.changingX += this.vX
-    if (this.limit < 0) {
-      this.y -= this.aPYUP;
-      this.changingY -= this.aPYUP;
-    } else {
-      this.y -= this.aPYDOWN;
-      this.changingY -= this.aPYDOWN
-    }
-  }
-  drawRotated() {
-    this.changingYA += 0.01
-    this.changingXAI += 0.001
-    this.changingY -= (0.55 + this.changingYAI)
-    this.changingX -= (0.05 + this.changingXAI)
-    this.rotate -= 0.3
-    this.ctx.save()
-    this.ctx.translate(this.x, this.y)
-    this.ctx.rotate(this.rotate * Math.PI / 360)
-    this.ctx.drawImage(this.image, 0, 0, this.width, this.height);
-    this.ctx.restore()
-  }
-  drawTransition() {
-    this.changingXAE += 0.001
-    this.changingY += 2
-    this.changingX += (1.4 - this.changingXAE)
-    this.rotate += 1.2
-    this.ctx.save()
-    this.ctx.translate(this.x, this.y)
-    this.ctx.rotate(this.rotate * Math.PI / 360)
-    this.ctx.drawImage(this.image, 0, 0, this.width, this.height);
-    this.ctx.restore()
-  }
-  drawEndRotation() {
-    this.changingY += 1
-    this.rotate -= 0.5
-    this.ctx.save()
-    this.ctx.translate(this.x, this.y)
-    this.ctx.rotate(this.rotate * Math.PI / 360)
-    this.ctx.drawImage(this.image, 0, 0, this.width, this.height);
-    this.ctx.restore()
-  }
-  updateVX() {
-    this.vX = 3
-  }
-  drawNormal() {
-    this.ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-  }
-  collisionUpdate() {
-    this.collision = !this.collision;
-  }
-  drawMegladonHitboxTheory() {
-    this.ctx.save()
-    this.ctx.translate(this.x, this.y)
-    this.ctx.rotate(((this.rotate + 25)) * Math.PI / 360)
-    this.ctx.beginPath();
-    this.ctx.strokeStyle = "black";
-    this.ctx.rect(30, 0, this.width * .9, this.height * .7);
-    this.ctx.stroke();
-    this.ctx.restore()
-  }
-  drawMegladonHitbox() {
-    this.ctx.save()
-    this.ctx.beginPath();
-    this.ctx.strokeStyle = "black";
-    this.ctx.rect(this.changingX, this.changingY, this.width * .7, this.height * .8);
-    this.ctx.stroke();
-    this.ctx.restore()
+    this.y += (this.vY * this.aY)
+    // console.log(this.y)
+    this.hitboxAy += 0.0075
+    this.hitboxX += this.hitboxVx
+    this.hitboxY += (this.hitboxVy * this.hitboxAy);
   }
   left() {
-    return this.changingX;
+    return this.hitboxX;
   }
   right() {
-    return this.changingX + this.width * .7;
+    return this.hitboxX + this.width * .9;
   }
   top() {
-    return this.changingY;
+    return this.hitboxY;
     // console.log("Checking to see if this works with extened class")
     // it works
   }
   bottom() {
-    return this.changingY + this.height * .8;
+    return this.hitboxY + this.height * .9;
   }
   crashWith(obstacle) {
     return !(
@@ -296,27 +277,37 @@ class Megladon extends Blueprint {
       this.left() > obstacle.right()
     );
   }
+  collisionUpdate() {
+    this.collision = !this.collision
+  }
 }
-
 class Shark extends ImageObjects {
-  constructor(x, y, width, height, canvasContext, imageElement) {
-    super(x, y, width, height, canvasContext);
-    this.image = imageElement;
+  constructor(myCanvas, canvasContext, imageElement) {
+    super();
+    this.myCanvas = myCanvas;
+    this.x = this.myCanvas.width;
+    this.topY = Math.random() * (this.myCanvas.height * 0.6 - 100)
+    this.bottomY = Math.random() * ((this.myCanvas.height * 0.4 + this.myCanvas.height * 0.6) - 100)
+    this.y = Math.random() > 0.15 ? this.topY : this.bottomY;
+    this.width = 200;
+    this.height = 60;
+    this.ctx = canvasContext;
+    this.imageElement = imageElement
     this.vX = Math.random() < 0.2 ? 6 : Math.floor(Math.random() * 4) + 2;
     this.accelerationBinary = Math.random() < 0.8 ? true : false;
     this.accelerationX = 1;
-    this.sharkBinary = true;
+    this.sharkBinaryY = Math.random() > 0.5 ? true : false;
     this.vY = 0;
   }
   draw() {
     // console.log(this.ctx)
-    this.ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    this.ctx.drawImage(this.imageElement, this.x, this.y, this.width, this.height);
   }
-  changeSharkBinary() {
-    this.sharkBinary = !this.sharkBinary;
+  changeSharkBinaryY() {
+    this.sharkBinaryY = !this.sharkBinaryY;
   }
-  checkBinary() {
-    if (this.sharkBinary) {
+  checkBinaryY() {
+    if (this.sharkBinaryY) {
       this.vY = 1.5;
     } else {
       this.vY = -2;
@@ -880,18 +871,8 @@ window.onload = () => {
       );
     }
     function createRightSharks() {
-      let heightRandom = Math.floor(
-        Math.random() * (myCanvas.height * 0.6 - 40)
-      );
       obstacleRightSharksArray.push(
-        new Shark(
-          myCanvas.width,
-          heightRandom,
-          200,
-          60,
-          ctx,
-          leftSwimmingSharkImage
-        )
+        new Shark(myCanvas, ctx, leftSwimmingSharkImage)
       );
     }
     function createJellyFish() {
@@ -948,8 +929,6 @@ window.onload = () => {
         createFastBubbles1();
         createFastBubbles1();
         createRightSharks();
-        createMegladon();
-
       }
       if (totalFrameCount % 150 === 0) {
         createBubbles();
@@ -984,7 +963,7 @@ window.onload = () => {
           // console.log("Slow: randomly created swim to right Jellyfish")
         }
       }
-      if (totalFrameCount % 1200 === 0) {
+      if (totalFrameCount % 600 === 0) {
         createMegladon();
       }
       // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS // UPDATE LOCATIONS
@@ -1082,8 +1061,8 @@ window.onload = () => {
       // UPDATE RIGHT SHARKS POSITION IN CANVAS AND DELETE THOSE WHO ARE OUT OF FRAME
       if (totalFrameCount % 80 === 0) {
         for (let i = 0; i < obstacleRightSharksArray.length; i++) {
-          obstacleRightSharksArray[i].checkBinary();
-          obstacleRightSharksArray[i].changeSharkBinary();
+          obstacleRightSharksArray[i].checkBinaryY();
+          obstacleRightSharksArray[i].changeSharkBinaryY();
         }
       }
       for (let i = 0; i < obstacleRightSharksArray.length; i++) {
@@ -1151,7 +1130,7 @@ window.onload = () => {
           bigTurtleLocation[i].randomizingTurtle();
         }
       }
-      for (let i = 0; i < megladonArray.length; i++) {
+      for (let i = 1; i < megladonArray.length; i++) {
         if (megladonArray[i].collision) {
           megladonArray.splice(i, 1);
           i--;
@@ -1162,13 +1141,11 @@ window.onload = () => {
           numberOfLives -= 2
           megladonArray[i].collisionUpdate();
         }
-        megladonArray[i].updateParabola();
-        megladonArray[i].update();
-        if (megladonArray[i].x > myCanvas.width + 200) {
+        if (megladonArray[i].x > myCanvas.width + megladonArray[i].width) {
           megladonArray.splice(i, 1);
           i--;
         }
-
+        megladonArray[i].update();
       }
       // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR // // CLEAR
       ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
@@ -1231,21 +1208,20 @@ window.onload = () => {
       for (let i = 0; i < toLeftJellyFishArray.length; i++) {
         toLeftJellyFishArray[i].draw();
       }
-      for (let i = 0; i < megladonArray.length; i++) {
-        if (megladonArray[i].limit > 0) {
-          megladonArray[i].drawRotated();
-          // console.log(megladonArray[i].limit)
-        } else if (megladonArray[i].limit <= 0 && megladonArray[i].limit > -300) {
-          megladonArray[i].drawTransition();
-          megladonArray[i].updateVX();
-        } else {
-          megladonArray[i].drawEndRotation();
+      for (let i = 1; i < megladonArray.length; i++) {
+        // megladonArray[i].draw0()
+        megladonArray[i].counter++
+        if (megladonArray[i].counter > 230) {
+          megladonArray[i].draw3()
+          console.log(megladonArray[i].rotate1)
+          continue;
         }
-        megladonArray[i].drawMegladonHitbox();
-        // console.log(megladonArray[i].x)
-        // console.log(megladonArray[i].y)
-        console.log(megladonArray.length)
-
+        if (megladonArray[i].x < 400) {
+          megladonArray[i].draw1()
+        } else {
+          megladonArray[i].draw2()
+          megladonArray[i].counter++
+        }
       }
       // DRAW MAIN CHARACTER
       if (bug) {
@@ -1269,7 +1245,7 @@ window.onload = () => {
       currentCanvas: document.querySelector('.indexCanvasOne'),
       end: function () {
         this.section.className = 'scoreboard';
-        this.section.innerHTML = '<div class="scoreInfo"><div class="finalScoreboard"></div><button class="restart-btn">RESTART GAME';
+        this.section.innerHTML = `<div class="scoreInfo"><div class="finalScoreboard"><table><thead><tr><th>Rank</th><th>Username</th><th>Points</th></tr></thead><tbody><tr><td>1</td><td>Micheal</td><td>102140810</td></tr><tr><td>2</td><td>Player521</td><td>1509234</td></tr><tr><td>3</td><td>Marley</td><td>11237</td></tr><tr><td>4</td><td>Abigail</td><td>10076</td></tr><tr><td>5</td><td>Evelyn</td><td>9895</td></tr><tr><td>6</td><td>player851</td><td>8871</td></tr><tr><td>7</td><td>player341</td><td>7642</td></tr><tr><td>8</td><td>player583</td><td>7505</td></tr><tr><td>9</td><td>Zion</td><td>7179</td></tr><tr><td>10</td><td>George</td><td>7105</td></tr><tr><td>11</td><td>Micheal</td><td>4801</td></tr><tr><td>12</td><td>Wilson</td><td>4063</td></tr><tr><td>13</td><td>player283</td><td>2938</td></tr><td>14</td><td>${playerName}</td><td>${totalScore}</td></tr><tr><td>15</td><td>player82</td><td>15</td></tr></tbody></table></div><button class="restart-btn">RESTART GAME></button></div>`;
         document.body.insertBefore(this.section, this.tohidden);
         this.currentCanvas.className = 'hidden';
       }
