@@ -162,7 +162,7 @@ class Blueprint {
     );
   }
   doubleCrashCheck() {
-    this.crashing = !this.crashing
+    this.crashing = true
   }
 }
 class ImageObjects extends Blueprint {
@@ -983,11 +983,8 @@ window.onload = () => {
       if (rotatingStarfishArray.length < 3) {
         rotatingStarfishArray.push(new ConstantRoationObjects(myCanvas, ctx, starfishRotationImg, 40, 40))
       }
+      rotatingStarfishArray = rotatingStarfishArray.filter(object => !object.crashing)
       for (let i = 0; i < rotatingStarfishArray.length; i++) {
-        if (rotatingStarfishArray[i].crashing) {
-          rotatingStarfishArray.splice(i, 1);
-          i--;
-        }
         rotatingStarfishArray[i].update();
         if (!rotatingStarfishArray[i].crashing) {
           let check = rotatingStarfishArray[i].crashWith(mainCharacterArray[0]);
@@ -1013,11 +1010,8 @@ window.onload = () => {
           obstacleBubblesArray[i].bubbleDirectorChange();
         }
       }
+      obstacleBubblesArray = obstacleBubblesArray.filter(object => !object.crashing)
       for (let i = 0; i < obstacleBubblesArray.length; i++) {
-        if (obstacleBubblesArray[i].crashing) {
-          obstacleBubblesArray.splice(i, 1);
-          i -= 1;
-        }
         obstacleBubblesArray[i].updateSlowY();
         obstacleBubblesArray[i].updateXDirection();
         let check = obstacleBubblesArray[i].crashWithBig(mainCharacterArray[0]);
@@ -1038,11 +1032,8 @@ window.onload = () => {
           obstacleFastBubblesArray1[i].bubbleDirectorChange();
         }
       }
+      obstacleFastBubblesArray1 = obstacleFastBubblesArray1.filter(object => !object.crashing)
       for (let i = 0; i < obstacleFastBubblesArray1.length; i++) {
-        if (obstacleFastBubblesArray1[i].crashing) {
-          obstacleFastBubblesArray1.splice(i, 1);
-          i -= 1;
-        }
         obstacleFastBubblesArray1[i].updateFastY();
         obstacleFastBubblesArray1[i].updateXDirection();
         let check = obstacleFastBubblesArray1[i].crashWithSmall(mainCharacterArray[0]);
@@ -1065,11 +1056,8 @@ window.onload = () => {
           obstacleRightSharksArray[i].changeSharkBinaryY();
         }
       }
+      obstacleRightSharksArray = obstacleRightSharksArray.filter(object => !object.crashing)
       for (let i = 0; i < obstacleRightSharksArray.length; i++) {
-        if (obstacleRightSharksArray[i].crashing) {
-          obstacleRightSharksArray.splice(i, 1);
-          i -= 1;
-        }
         if (
           obstacleRightSharksArray[i].accelerationBinary &&
           obstacleRightSharksArray[i].vX < 3
@@ -1085,15 +1073,14 @@ window.onload = () => {
           obstacleRightSharksArray[i].x <
           0 - obstacleRightSharksArray[i].width
         ) {
-          obstacleRightSharksArray.splice([i], 1);
-          i -= 1;
+          obstacleRightSharksArray[i].doubleCrashCheck();
         }
         let check = obstacleRightSharksArray[i].crashWith(mainCharacterArray[0])
         if (check) {
           numberOfLives -= 1;
           obstacleRightSharksArray[i].doubleCrashCheck();
         }
-        // console.log(obstacleRightSharksArray.length);
+        console.log(obstacleRightSharksArray.length);
       }
       // UPDATE TO RIGHT JELLYFISH POSITION AND DELETE THOSE WHO ARE OUT OF FRAME
       for (let i = 0; i < jellyFishArray.length; i++) {
